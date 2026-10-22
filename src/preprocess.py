@@ -1,109 +1,70 @@
-
 import pandas as pd
-from sklearn.neighbors import LocalOutlierFactor
-from sklearn.preprocessing import StandardScaler
 
-# 1. CARGA DEL DATASET
-
-columnas = ["sex", "length", "diameter", "height","whole_weight", "shucked_weight","viscera_weight", "shell_weight", "rings"]
-df = pd.read_csv("data/raw/abalone_raw.csv",header=None,names=columnas)
+df = pd.read_csv(
+    "data/raw/abalone_raw.csv",
+    header=None,
+    names=["sex", "length", "diameter", "height",
+           "whole_weight", "shucked_weight",
+           "viscera_weight", "shell_weight", "rings"]
+)
 print(f"Dataset original: {df.shape}")
 
 
-# 2. TRANSFORMACIÓN DE VARIABLES
-
-# Crear la variable objetivo: edad estimada
+# Crear la variable objetivo: edad estimada -------------
 df["age"] = df["rings"] + 1.5
 
-# Codificar sex mediante One-Hot Encoding
+# Codificar sex mediante One-Hot Encoding ---------------
 df = pd.get_dummies(
     df,
     columns=["sex"],
     dtype=int
 )
 
+# Buscamos outliers y graficamos boxplots ----------------
 
-# 3. DETECCIÓN DE OUTLIERS: IQR
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 variables = ["length", "diameter", "height","whole_weight", "shucked_weight","viscera_weight", "shell_weight", "rings"]
+fig, axes = plt.subplots(2, 4, figsize=(18, 9))
 
-print("\n--- ANÁLISIS DE OUTLIERS (IQR) ---")
+for ax, columna in zip(axes.flat, variables):
+    sns.boxplot(y=df[columna],ax=ax,color="lightblue",flierprops={"marker": "o","markerfacecolor": "red","markersize": 4,"alpha": 0.6})
+    ax.set_title(columna)
+    ax.set_ylabel("")
+    ax.grid(axis="y", alpha=0.3)
 
-for columna in variables:
+plt.suptitle("Análisis de Outliers - Dataset Abalone", fontsize=17)
+plt.tight_layout()
+plt.show()
 
-    Q1 = df[columna].quantile(0.25)
-    Q3 = df[columna].quantile(0.75)
-    IQR = Q3 - Q1
+import pandas as pd
 
-    limite_inf = Q1 - 1.5 * IQR
-    limite_sup = Q3 + 1.5 * IQR
+variables = [
+    "length", "diameter", "height",
+    "whole_weight", "shucked_weight",
+    "viscera_weight", "shell_weight", "rings"
+]
 
-    mascara = (
-        (df[columna] < limite_inf) |
-        (df[columna] > limite_sup)
-    )
+# Crear y mostrar tablas ---------------------------------------
+mayores = pd.DataFrame({
+    columna: df[columna].nlargest(5).values
+    for columna in variables
+})
 
-    print(
-        f"{columna:18} | "
-        f"Outliers: {mascara.sum():4} | "
-        f"Límites: [{limite_inf:.3f}, {limite_sup:.3f}]"
-    )
+menores = pd.DataFrame({
+    columna: df[columna].nsmallest(5).values
+    for columna in variables
+})
 
+mayores.index += 1
+menores.index += 1
 
-# 4. DETECCIÓN DE ANOMALÍAS: LOF
+print("\n========================= 5 VALORES MÁS ALTOS =========================")
+print(mayores.to_string())
 
-print("\n--- ANÁLISIS DE OUTLIERS (LOF) ---")
+print("\n========================= 5 VALORES MÁS BAJOS =========================")
+print(menores.to_string())
 
-# Estandarización temporal para calcular distancias
-X = StandardScaler().fit_transform(df[variables])
-
-lof = LocalOutlierFactor(
-    n_neighbors=20,
-    contamination=0.01
-)
-
-predicciones = lof.fit_predict(X)
-
-# Obtener observaciones anómalas
-df_lof = df.loc[predicciones == -1].copy()
-
-df_lof["lof_score"] = (
-    -lof.negative_outlier_factor_[predicciones == -1]
-)
-
-df_lof = df_lof.sort_values(
-    "lof_score",
-    ascending=False
-)
-
-print(f"Anomalías detectadas: {len(df_lof)}")
-print(df_lof.head(15).to_string())
-
-
-# 5. TRATAMIENTO DE OUTLIERS: CLIPPING
-
-print("\n--- TRATAMIENTO DE OUTLIERS ---")
-
-# Conservar una copia de height para comparar
-height_original = df["height"].copy()
-
-# Limitar alturas a valores entre 0.010 y 0.250
-df["height"] = df["height"].clip(
-    lower=0.010,
-    upper=0.250
-)
-
-# Contar cuántas observaciones fueron modificadas
-modificados = (height_original != df["height"]).sum()
-
-print(f"Valores de height modificados: {modificados}")
-print(f"Filas conservadas: {len(df)}")
-
-
-# 6. RESUMEN FINAL
-
-print("\n--- RESUMEN DEL PREPROCESAMIENTO ---")
-print(f"Dimensiones finales: {df.shape}")
-print(f"Valores nulos: {df.isna().sum().sum()}")
-print("\nPrimeras filas:")
-print(df.head())
+# Consideramos todos los valores outliers como legitimos excepto los de altura con valor 0
+# Evitamos riesgos y simplemente borramos las filas ya que son pocas
