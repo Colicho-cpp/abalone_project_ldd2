@@ -64,7 +64,20 @@ abalone_project/
 
 ## Preprocesamiento
 
-_(se completa en el Ejercicio 2)_
+El script `src/preprocess.py` realiza las siguientes operaciones:
+
+1. Carga el dataset Abalone original.
+2. Crea la variable `age = rings + 1.5`.
+3. Codifica `sex` mediante One-Hot Encoding.
+4. Analiza valores atípicos mediante boxplots.
+5. Elimina las observaciones con `height = 0`.
+6. Genera `data/processed/abalone_clean.csv`.
+
+Para ejecutarlo desde la raíz del proyecto:
+
+    python src/preprocess.py
+
+Las transformaciones están documentadas en `data/data_log.json`.
 
 ## Entrenamiento y evaluación
 
