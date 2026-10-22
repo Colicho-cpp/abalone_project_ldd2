@@ -1,4 +1,6 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 df = pd.read_csv(
     "data/raw/abalone_raw.csv",
@@ -22,9 +24,6 @@ df = pd.get_dummies(
 
 # Buscamos outliers y graficamos boxplots ----------------
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 variables = ["length", "diameter", "height","whole_weight", "shucked_weight","viscera_weight", "shell_weight", "rings"]
 fig, axes = plt.subplots(2, 4, figsize=(18, 9))
 
@@ -37,8 +36,6 @@ for ax, columna in zip(axes.flat, variables):
 plt.suptitle("Análisis de Outliers - Dataset Abalone", fontsize=17)
 plt.tight_layout()
 plt.show()
-
-import pandas as pd
 
 variables = [
     "length", "diameter", "height",
@@ -75,3 +72,11 @@ df = df[df["height"] != 0].copy()
 
 print(f"Filas eliminadas: {filas_antes - len(df)}")
 print(f"Filas restantes: {len(df)}")
+
+# Guardar dataset procesado -------------------------------
+df.to_csv(
+    "data/processed/abalone_clean.csv",
+    index=False
+)
+
+print(f"Dataset procesado guardado: {df.shape}")
