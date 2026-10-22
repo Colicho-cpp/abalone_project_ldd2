@@ -66,5 +66,12 @@ print(mayores.to_string())
 print("\n========================= 5 VALORES MÁS BAJOS =========================")
 print(menores.to_string())
 
-# Consideramos todos los valores outliers como legitimos excepto los de altura con valor 0
-# Evitamos riesgos y simplemente borramos las filas ya que son pocas
+# Consideramos todos los valores outliers como legitimos excepto los de "Height" con valor 0
+# Evitamos riesgos y simplemente borramos las filas ya que son solo 2
+
+filas_antes = len(df)
+
+df = df[df["height"] != 0].copy()
+
+print(f"Filas eliminadas: {filas_antes - len(df)}")
+print(f"Filas restantes: {len(df)}")
