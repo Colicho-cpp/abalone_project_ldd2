@@ -64,7 +64,35 @@ abalone_project/
 
 ## Preprocesamiento
 
-_(se completa en el Ejercicio 2)_
+El script `src/preprocess.py` realiza las siguientes operaciones:
+
+1. Carga el dataset Abalone original.
+2. Crea la variable `age = rings + 1.5`.
+3. Codifica `sex` mediante One-Hot Encoding.
+4. Analiza valores atípicos mediante boxplots.
+5. Elimina las observaciones con `height = 0`.
+6. Genera `data/processed/abalone_clean.csv`.
+
+Para ejecutarlo desde la raíz del proyecto:
+
+    python src/preprocess.py
+
+Las transformaciones están documentadas en `data/data_log.json`.
+
+## Ejercicio 2 — Preguntas teóricas
+
+### 1. ¿Qué información de data_log.json es imprescindible para reconstruir el dataset procesado? ¿Nuestro registro alcanza?
+Sí, el registro permite entender cómo se procesaron los datos. Para reproducirlos exactamente, también necesitamos el archivo original, el código preprocess.py y las dependencias correspondientes
+
+### 2. ¿Qué pasaría si el dataset pesara varios GB o cambiara todas las semanas?
+Guardar los datos directamente en Git sería problemático porque:
+- El repositorio crecería demasiado.
+- Cada nueva versión ocuparía espacio.
+- Clonar y descargar el proyecto sería cada vez más lento.
+
+Una alternativa sería separar el código de los datos, utilizando .gitignore para evitar almacenar los datasets directamente en Git y servicios externos como Amazon S3 para guardarlos.
+
+Además, podríamos utilizar herramientas como DVC para gestionar las versiones mediante referencias y hashes, manteniendo la trazabilidad sin almacenar los archivos completos en Git.
 
 ## Entrenamiento y evaluación
 
@@ -73,3 +101,4 @@ _(se completa en el Ejercicio 3)_
 ## Resultados
 
 _(se completa en el Ejercicio 4)_
+
