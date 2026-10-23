@@ -96,7 +96,9 @@ Además, podríamos utilizar herramientas como DVC para gestionar las versiones 
 
 ## Entrenamiento y evaluación
 
-_(se completa en el Ejercicio 3)_
+Para entrenar el modelo de regresión con el Pipeline (`StandardScaler` + `RandomForestRegressor`), evaluar su desempeño con los datos de test, generar el archivo serializado (`models/model_v1.pkl`) y guardar las métricas en formato JSON (`results/metrics_v1.json`), ejecutar:
+
+python src/train_model.py
 
 ## Resultados
 

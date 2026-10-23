@@ -1,0 +1,2 @@
+experiment_id,timestamp,model_version,n_estimators,random_state,MAE,RMSE,R2
+exp_01,2026-10-23 13:39:16,v1,100,42,0.0011497005988023994,0.01332235076629194,0.9999844456600517
