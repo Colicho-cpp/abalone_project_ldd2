@@ -1,0 +1,13 @@
+{
+    "model_version": "v1",
+    "hyperparameters": {
+        "n_estimators": 100,
+        "random_state": 42
+    },
+    "metrics": {
+        "MAE": 0.0011497005988023994,
+        "RMSE": 0.01332235076629194,
+        "R2": 0.9999844456600517
+    },
+    "random_state_split": 42
+}
