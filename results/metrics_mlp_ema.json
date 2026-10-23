@@ -1,0 +1,41 @@
+{
+    "experiment_id": "exp_mlp_ema",
+    "model_version": "mlp_ema_v1",
+    "model_type": "MLPRegressor",
+    "random_state_split": 42,
+    "epochs_trained": 126,
+    "hyperparameters": {
+        "activation": "relu",
+        "alpha": 0.0736284816059005,
+        "batch_size": 32,
+        "beta_1": 0.9,
+        "beta_2": 0.999,
+        "early_stopping": true,
+        "epsilon": 1e-08,
+        "hidden_layer_sizes": [
+            128,
+            64
+        ],
+        "learning_rate": "constant",
+        "learning_rate_init": 0.00235180773614519,
+        "loss": "squared_error",
+        "max_fun": 15000,
+        "max_iter": 1000,
+        "momentum": 0.9,
+        "n_iter_no_change": 20,
+        "nesterovs_momentum": true,
+        "power_t": 0.5,
+        "random_state": 42,
+        "shuffle": true,
+        "solver": "adam",
+        "tol": 0.0001,
+        "validation_fraction": 0.2,
+        "verbose": false,
+        "warm_start": false
+    },
+    "metrics": {
+        "MAE": 1.508072416843573,
+        "RMSE": 2.1461785306925547,
+        "R2": 0.596334576925347
+    }
+}
