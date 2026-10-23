@@ -1,0 +1,13 @@
+{
+    "model_version": "v2",
+    "hyperparameters": {
+        "C": 10,
+        "kernel": "rbf"
+    },
+    "metrics": {
+        "MAE": 1.5103421559658528,
+        "RMSE": 2.21455345275274,
+        "R2": 0.5702041745268214
+    },
+    "random_state_split": 42
+}
