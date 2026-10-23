@@ -102,5 +102,5 @@ python src/train_model.py
 
 ## Resultados
 
-_(se completa en el Ejercicio 4)_
+**Modelo v2 (SVR - kernel='rbf', C=10.0, epsilon=0.2):** MAE = 1.51 | RMSE = 2.21 | R² = 0.57
 
