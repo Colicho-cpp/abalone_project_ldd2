@@ -106,6 +106,12 @@ Entrena un Pipeline (`StandardScaler` + `KNeighborsRegressor`). Los hiperparáme
 
     python src/train_knn.py
 
+### Experimento v4 — Gradient Boosting (rama `exp/hiperparametros-iara`)
+
+Entrena un Pipeline (`StandardScaler` + `GradientBoostingRegressor` con `n_estimators=100`, `learning_rate=0.1`, `random_state=42`) sobre la misma división train/test (`random_state=42`). Genera `models/model_v4.pkl`, `results/metrics_v4.json` y agrega una fila a `results/experiments_log.csv`:
+
+    python src/train_model_gradb.py
+
 ## Resultados
 
 **Modelo v2 (SVR - kernel='rbf', C=10.0, epsilon=0.2):** MAE = 1.51 | RMSE = 2.21 | R² = 0.57
@@ -113,6 +119,8 @@ Entrena un Pipeline (`StandardScaler` + `KNeighborsRegressor`). Los hiperparáme
 **Modelo v3 (KNN - n_neighbors=17, weights='distance', p=1):** MAE = 1.57 | RMSE = 2.33 | R² = 0.52
 
 **Modelo MLP (MLPRegressor - (128, 64), Optuna):** MAE = 1.51 | RMSE = 2.15 | R² = 0.60
+
+**Modelo v4 (Gradient Boosting - n_estimators=100, learning_rate=0.1):** MAE = 1.56 | RMSE = 2.24 | R² = 0.56
 
 ### MLPRegressor — Emanuel Savat
 

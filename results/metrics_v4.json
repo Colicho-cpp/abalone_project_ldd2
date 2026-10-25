@@ -1,0 +1,14 @@
+{
+    "model_version": "v4",
+    "hyperparameters": {
+        "n_estimators": 100,
+        "learning_rate": 0.1,
+        "random_state": 42
+    },
+    "metrics": {
+        "MAE": 1.5570201291559036,
+        "RMSE": 2.2411582116083024,
+        "R2": 0.5598153535034405
+    },
+    "random_state_split": 42
+}
