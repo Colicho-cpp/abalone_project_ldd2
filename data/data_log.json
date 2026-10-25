@@ -1,0 +1,44 @@
+
+{
+  "version": "v1",
+  "created_at": "2026-10-22",
+  "source": "data/raw/abalone_raw.csv",
+  "output": "data/processed/abalone_clean.csv",
+  "original_rows": 4177,
+  "processed_rows": 4175,
+  "transformations": [
+    {
+      "operation": "create_age",
+      "description": "Crear la variable objetivo age",
+      "formula": "age = rings + 1.5"
+    },
+    {
+      "operation": "one_hot_encoding",
+      "column": "sex",
+      "output_columns": ["sex_F", "sex_I", "sex_M"],
+      "dtype": "int"
+    },
+    {
+      "operation": "outlier_analysis",
+      "method": "Boxplots y análisis de valores extremos",
+      "columns": [
+        "length",
+        "diameter",
+        "height",
+        "whole_weight",
+        "shucked_weight",
+        "viscera_weight",
+        "shell_weight",
+        "rings"
+      ],
+      "decision": "Conservar los valores extremos salvo las observaciones con height igual a cero"
+    },
+    {
+      "operation": "remove_invalid_height",
+      "condition": "height == 0",
+      "rows_removed": 2,
+      "reason": "Posibles errores de medición"
+    }
+  ],
+  "scaling_applied": false
+}

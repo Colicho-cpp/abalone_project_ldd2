@@ -29,7 +29,7 @@ pipeline = Pipeline(steps=[
 ])
 
 #Entrenamos el modelo
-print("Entrenando el modelo v2 con Gradient Boosting...")
+print("Entrenando el modelo v4 con Gradient Boosting...")
 pipeline.fit(X_train, y_train)
 
 #Evaluamos el modelo
@@ -40,7 +40,7 @@ r2 = r2_score(y_test, y_pred)
 
 print(f"Métricas - MAE: {mae:.4f} | RMSE: {rmse:.4f} | R2: {r2:.4f}")
 
-#Guardar modelo v2
+#Guardar modelo v4
 os.makedirs("models", exist_ok=True)
 joblib.dump(pipeline, "models/model_v4.pkl", compress=3)
 
@@ -66,23 +66,21 @@ with open("results/metrics_v4.json", "w") as f:
 
 #Registrar la ejecución en el log de experimentos
 log_file = "results/experiments_log.csv"
+#Mismas columnas y orden que el encabezado de experiments_log.csv
 log_data = {
-    "experiment_id": ["exp_02"],
+    "experiment_id": ["exp_04"],
     "timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
-    "model_version": ["v2"],
-    "algorithm": ["GradientBoostingRegressor"],
+    "model_version": ["v4"],
+    "n_estimators": [100],
+    "random_state": [42],
     "MAE": [mae],
     "RMSE": [rmse],
-    "R2": [r2]
+    "R2": [r2],
+    "model_type": ["GradientBoostingRegressor"],
+    "hyperparameters": [json.dumps(experiment_results["hyperparameters"])],
 }
 
 log_df = pd.DataFrame(log_data)
-if not os.path.exists(log_file):
-    log_df.to_csv(log_file, index=False)
-else:
-    # Si ya existe, nos aseguramos de concatenar de forma segura o sobrescribir las columnas necesarias
-    existing_df = pd.read_csv(log_file)
-    # Si las columnas difieren, podemos anexar de manera compatible o reescribir limpio para el experimento
-    log_df.to_csv(log_file, mode="a", header=not os.path.exists(log_file) or os.stat(log_file).st_size == 0, index=False)
+log_df.to_csv(log_file, mode="a", header=not os.path.exists(log_file), index=False)
 
 print("¡Modelo v4 con Gradient Boosting entrenado y registrado con éxito!")
