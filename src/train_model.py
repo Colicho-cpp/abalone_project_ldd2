@@ -15,8 +15,8 @@ df=pd.read_csv("data/processed/abalone_clean.csv")
 
 #Separamos características (X) y objetivo (y)
 #'age' es la variable que queremos predecir
-X=df.drop(columns=["age","rings"])
-y=df["age"]
+X = df.drop(columns=["age", "rings"])
+y = df["age"]
 
 #Dividimos en entrenamiento y test fijando la semilla (random_state)
 X_train, X_test, y_train, y_test = train_test_split(

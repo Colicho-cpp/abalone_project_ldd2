@@ -112,3 +112,27 @@ Entrena un Pipeline (`StandardScaler` + `KNeighborsRegressor`). Los hiperparáme
 
 **Modelo v3 (KNN - n_neighbors=17, weights='distance', p=1):** MAE = 1.57 | RMSE = 2.33 | R² = 0.52
 
+**Modelo MLP (MLPRegressor - (128, 64), Optuna):** MAE = 1.51 | RMSE = 2.15 | R² = 0.60
+
+### MLPRegressor — Emanuel Savat
+
+Se entrenó una red neuronal multicapa para predecir la edad de los abalones, excluyendo `rings` para evitar *data leakage*.
+
+**Optimización con Optuna:**
+- 80 trials, utilizando `MedianPruner`.
+- Arquitectura seleccionada: (128, 64).
+- Activación: ReLU.
+- Optimizador: Adam.
+- Learning rate: 0.002352.
+- Regularización (alpha): 0.073628.
+- Batch size: 32.
+- Early Stopping habilitado.
+
+**Resultados de evaluación:**
+
+| Modelo | MAE | RMSE | R² |
+|---|---:|---:|---:|
+| Random Forest corregido | 1.5880 | 2.2476 | 0.5573 |
+| MLPRegressor | **1.5081** | **2.1462** | **0.5963** |
+
+El modelo entrenado se encuentra en `models/model_mlp_ema.pkl`, las métricas en `results/metrics_mlp_ema.json` y el historial de Optuna en `results/optuna_trials_ema.csv`.
