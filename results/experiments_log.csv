@@ -1,4 +1,5 @@
-experiment_id,timestamp,model_version,n_estimators,random_state,MAE,RMSE,R2
+experiment_id,timestamp,model_version,n_estimators,random_state,MAE,RMSE,R2,model_type,hyperparameters
 exp_01,2026-10-23 13:39:16,v1,100,42,0.0011497005988023994,0.01332235076629194,0.9999844456600517
 exp_02,2026-10-23 19:03:54,v2,10,rbf,1.5103421559658528,2.21455345275274,0.5702041745268214
 exp_02,2026-10-23 19:05:50,v2,10,rbf,1.5103421559658528,2.21455345275274,0.5702041745268214
+exp_03,2026-10-25 15:34:41,v3,,42,1.5710556534549032,2.3307474566103035,0.523919606464873,KNeighborsRegressor,"{""n_neighbors"": 17, ""p"": 1, ""weights"": ""distance""}"
