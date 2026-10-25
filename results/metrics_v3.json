@@ -1,0 +1,50 @@
+{
+    "model_version": "v3",
+    "model_type": "KNeighborsRegressor",
+    "target": "age",
+    "hyperparameters": {
+        "n_neighbors": 17,
+        "p": 1,
+        "weights": "distance"
+    },
+    "hyperparameter_search": {
+        "method": "GridSearchCV",
+        "param_grid": {
+            "n_neighbors": [
+                3,
+                5,
+                7,
+                9,
+                11,
+                13,
+                15,
+                17,
+                19,
+                21,
+                23,
+                25,
+                27,
+                29,
+                31
+            ],
+            "weights": [
+                "uniform",
+                "distance"
+            ],
+            "p": [
+                1,
+                2
+            ]
+        },
+        "cv": "KFold(n_splits=5, shuffle=True)",
+        "scoring": "neg_root_mean_squared_error",
+        "best_cv_RMSE": 2.2044119001832843
+    },
+    "metrics": {
+        "MAE": 1.5710556534549032,
+        "RMSE": 2.3307474566103035,
+        "R2": 0.523919606464873
+    },
+    "random_state_split": 42,
+    "random_state_cv": 42
+}

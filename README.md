@@ -100,7 +100,15 @@ Para entrenar el modelo de regresión con el Pipeline (`StandardScaler` + `Rando
 
 python src/train_model.py
 
+### Experimento v3 — KNN (rama `exp/knn`)
+
+Entrena un Pipeline (`StandardScaler` + `KNeighborsRegressor`). Los hiperparámetros (`n_neighbors`, `weights`, `p`) se eligen con `GridSearchCV` (KFold de 5 folds, `random_state=42`) usando sólo los datos de entrenamiento, y luego se evalúa sobre test. Genera `models/model_v3.pkl`, `results/metrics_v3.json` y agrega una fila a `results/experiments_log.csv`:
+
+    python src/train_knn.py
+
 ## Resultados
 
 **Modelo v2 (SVR - kernel='rbf', C=10.0, epsilon=0.2):** MAE = 1.51 | RMSE = 2.21 | R² = 0.57
+
+**Modelo v3 (KNN - n_neighbors=17, weights='distance', p=1):** MAE = 1.57 | RMSE = 2.33 | R² = 0.52
 
