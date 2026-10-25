@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.svm import SVR
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error, r2_score
 import joblib
 import os
@@ -11,6 +11,7 @@ from datetime import datetime
 
 #cargamos el dataset procesado
 df=pd.read_csv("data/processed/abalone_clean.csv")
+
 
 #Separamos características (X) y objetivo (y)
 #'age' es la variable que queremos predecir
@@ -29,7 +30,7 @@ print(f"Datos de test: {X_test.shape}")
 pipeline=Pipeline(
     steps=[
         ("scaler", StandardScaler()),
-        ("model", RandomForestRegressor(n_estimators=100, random_state=42)),
+        ("model", SVR(kernel='rbf', C=10.0, epsilon=0.2, gamma='scale')),
     ]
 )
 
@@ -45,16 +46,16 @@ rmse = root_mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
 os.makedirs("models", exist_ok=True)
-joblib.dump(pipeline, "models/model_v1.pkl", compress=3)
+joblib.dump(pipeline, "models/model_v2.pkl", compress=3)
 
 #Guardamos las métricas, hiperparámetros y semilla en un JSON
 
 os.makedirs("results", exist_ok=True)
 metrics_data = {
-    "model_version": "v1",
+    "model_version": "v2",
     "hyperparameters": {
-        "n_estimators": 100,
-        "random_state": 42
+        "C": 10,
+        "kernel": "rbf"
     },
     "metrics": {
         "MAE": mae,
@@ -64,17 +65,17 @@ metrics_data = {
     "random_state_split": 42
 }
 
-with open("results/metrics_v1.json", "w") as f:
+with open("results/metrics_v2.json", "w") as f:
     json.dump(metrics_data, f, indent=4)
 
 #registramos la ejecución en results/experiments_log.csv
 log_file="results/experiments_log.csv"
 log_data={
-    "experiment_id": ["exp_01"],
+    "experiment_id": ["exp_02"],
     "timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
-    "model_version": ["v1"],
-    "n_estimators": [100],
-    "random_state": [42],
+    "model_version": ["v2"],
+    "C": [10],
+    "kernel": ["rbf"],
     "MAE": [mae],
     "RMSE": [rmse],
     "R2": [r2]

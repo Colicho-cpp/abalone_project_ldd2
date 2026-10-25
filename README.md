@@ -100,9 +100,19 @@ Para entrenar el modelo de regresión con el Pipeline (`StandardScaler` + `Rando
 
 python src/train_model.py
 
+### Experimento v3 — KNN (rama `exp/knn`)
+
+Entrena un Pipeline (`StandardScaler` + `KNeighborsRegressor`). Los hiperparámetros (`n_neighbors`, `weights`, `p`) se eligen con `GridSearchCV` (KFold de 5 folds, `random_state=42`) usando sólo los datos de entrenamiento, y luego se evalúa sobre test. Genera `models/model_v3.pkl`, `results/metrics_v3.json` y agrega una fila a `results/experiments_log.csv`:
+
+    python src/train_knn.py
+
 ## Resultados
 
-## Resultados — Ejercicio 4
+**Modelo v2 (SVR - kernel='rbf', C=10.0, epsilon=0.2):** MAE = 1.51 | RMSE = 2.21 | R² = 0.57
+
+**Modelo v3 (KNN - n_neighbors=17, weights='distance', p=1):** MAE = 1.57 | RMSE = 2.33 | R² = 0.52
+
+**Modelo MLP (MLPRegressor - (128, 64), Optuna):** MAE = 1.51 | RMSE = 2.15 | R² = 0.60
 
 ### MLPRegressor — Emanuel Savat
 
@@ -125,6 +135,4 @@ Se entrenó una red neuronal multicapa para predecir la edad de los abalones, ex
 | Random Forest corregido | 1.5880 | 2.2476 | 0.5573 |
 | MLPRegressor | **1.5081** | **2.1462** | **0.5963** |
 
-
 El modelo entrenado se encuentra en `models/model_mlp_ema.pkl`, las métricas en `results/metrics_mlp_ema.json` y el historial de Optuna en `results/optuna_trials_ema.csv`.
-
