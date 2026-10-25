@@ -112,3 +112,4 @@ Entrena un Pipeline (`StandardScaler` + `KNeighborsRegressor`). Los hiperparáme
 
 **Modelo v3 (KNN - n_neighbors=17, weights='distance', p=1):** MAE = 1.57 | RMSE = 2.33 | R² = 0.52
 
+**Modelo v4 (Gradient Boosting)-n_estimators=100,learning_rate=0.1,random_state=42** MAE = 1.56 | RMSE = 2.24 | R² = 0.56
