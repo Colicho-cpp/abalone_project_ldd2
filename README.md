@@ -135,6 +135,38 @@ Guardar los datos directamente en Git sería problemático porque:
 Una alternativa sería separar el código de los datos, utilizando `.gitignore` para evitar almacenar los datasets directamente en Git y servicios externos como Amazon S3 o Google Cloud Storage para guardarlos. Además, podríamos utilizar herramientas como **DVC (Data Version Control)** para gestionar las versiones mediante archivos livianos de referencias y hashes, manteniendo la trazabilidad sin almacenar los archivos pesados en Git.
 
 ---
+## Ejercicio 3
+
+Esta etapa entrena un modelo reproducible para predecir la variable objetivo `age` a partir del conjunto de datos preprocesado (`data/processed/abalone_clean.csv`).
+
+### 1. Requisitos previos
+Asegúrate de tener instaladas las dependencias necesarias y de haber ejecutado previamente la etapa de preprocesamiento para contar con el archivo `data/processed/abalone_clean.csv`:
+
+```bash
+pip install pandas scikit-learn joblib
+```
+
+### 2. Entrenamiento y Evaluación del Modelo
+Para entrenar el modelo, evaluar su desempeño en el conjunto de prueba y registrar los resultados, ejecuta el siguiente comando desde la raíz del proyecto:
+
+```bash
+python src/train_model.py
+```
+
+#### ¿Qué realiza este script?
+* **División de datos:** Separa las características (`X`, excluyendo `age` y `rings`) y la variable objetivo (`y = age`), dividiendo los datos en entrenamiento (80%) y test (20%) con una semilla fija (`random_state=42`) para garantizar la reproducibilidad.
+* **Pipeline de entrenamiento:** Construye un `Pipeline` que aplica escalado estándar (`StandardScaler`) ajustado únicamente con los datos de entrenamiento, seguido de un modelo de regresión de soporte vectorial (`SVR` con `kernel='rbf'`, `C=10.0`, `epsilon=0.2`, `gamma='scale'`).
+* **Evaluación:** Calcula las métricas principales sobre el conjunto de prueba:
+  * **MAE** (Error Absoluto Medio)
+  * **RMSE** (Raíz del Error Cuadrático Medio)
+  * **R²** (Coeficiente de Determinación)
+
+### 3. Artefactos y Resultados Generados
+Al finalizar la ejecución, se crean y actualizan automáticamente los siguientes archivos:
+
+* **`models/model_v2.pkl`**: Pipeline completo entrenado y serializado con compresión (`compress=3`).
+* **`results/metrics_v2.json`**: Archivo JSON con el detalle de la versión del modelo, hiperparámetros configurados, semilla utilizada y resultados de las métricas (MAE, RMSE, R²).
+* **`results/experiments_log.csv`**: Registro histórico acumulativo de experimentos que almacena el ID del experimento (`experiment_id`), fecha y hora de ejecución (`timestamp`), versión del modelo, hiperparámetros y métricas obtenidas.
 
 ## Entrenamiento y evaluación
 
@@ -226,38 +258,7 @@ Se entrenó una red neuronal multicapa para predecir la edad de los abalones, ex
 El modelo entrenado se encuentra en `models/model_mlp_ema.pkl`, las métricas en `results/metrics_mlp_ema.json` y el historial de Optuna en `results/optuna_trials_ema.csv`.
 
 ---
-## Ejercicio 3
 
-Esta etapa entrena un modelo reproducible para predecir la variable objetivo `age` a partir del conjunto de datos preprocesado (`data/processed/abalone_clean.csv`).
-
-### 1. Requisitos previos
-Asegúrate de tener instaladas las dependencias necesarias y de haber ejecutado previamente la etapa de preprocesamiento para contar con el archivo `data/processed/abalone_clean.csv`:
-
-```bash
-pip install pandas scikit-learn joblib
-```
-
-### 2. Entrenamiento y Evaluación del Modelo
-Para entrenar el modelo, evaluar su desempeño en el conjunto de prueba y registrar los resultados, ejecuta el siguiente comando desde la raíz del proyecto:
-
-```bash
-python src/train_model.py
-```
-
-#### ¿Qué realiza este script?
-* **División de datos:** Separa las características (`X`, excluyendo `age` y `rings`) y la variable objetivo (`y = age`), dividiendo los datos en entrenamiento (80%) y test (20%) con una semilla fija (`random_state=42`) para garantizar la reproducibilidad.
-* **Pipeline de entrenamiento:** Construye un `Pipeline` que aplica escalado estándar (`StandardScaler`) ajustado únicamente con los datos de entrenamiento, seguido de un modelo de regresión de soporte vectorial (`SVR` con `kernel='rbf'`, `C=10.0`, `epsilon=0.2`, `gamma='scale'`).
-* **Evaluación:** Calcula las métricas principales sobre el conjunto de prueba:
-  * **MAE** (Error Absoluto Medio)
-  * **RMSE** (Raíz del Error Cuadrático Medio)
-  * **R²** (Coeficiente de Determinación)
-
-### 3. Artefactos y Resultados Generados
-Al finalizar la ejecución, se crean y actualizan automáticamente los siguientes archivos:
-
-* **`models/model_v2.pkl`**: Pipeline completo entrenado y serializado con compresión (`compress=3`).
-* **`results/metrics_v2.json`**: Archivo JSON con el detalle de la versión del modelo, hiperparámetros configurados, semilla utilizada y resultados de las métricas (MAE, RMSE, R²).
-* **`results/experiments_log.csv`**: Registro histórico acumulativo de experimentos que almacena el ID del experimento (`experiment_id`), fecha y hora de ejecución (`timestamp`), versión del modelo, hiperparámetros y métricas obtenidas.
 ## Ejercicio 4 — Resolución de conflictos de Merge (NUEVO)
 
 Al trabajar en ramas paralelas (`exp/algoritmo-gero`, `exp/knn`, `exp/hiperparametros-iara`, `exp/mlp-emasavat`) creadas a partir de `main`, cada integrante agregó la fila de su experimento al final de `results/experiments_log.csv` y una línea con sus métricas en la sección `## Resultados` de este `README.md`.
