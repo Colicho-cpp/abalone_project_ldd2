@@ -210,7 +210,7 @@ python src/train_model_gradb.py
 
 Entrena un Pipeline (`StandardScaler` + `MLPRegressor`) con los hiperparámetros encontrados por
 Optuna (ya fijados en el script). Genera `models/model_mlp_ema.pkl`,
-`results/metrics_mlp_ema.json` y el gráfico `results/mlp_ema.png`:
+`results/metrics_mlp_ema.json`
 
 ```bash
 python src/train_mlp_ema.py
