@@ -301,7 +301,6 @@ Para comprobar que el proyecto puede reproducirse desde cero, se clonó el repos
 
 1. **Archivos que aparecen como modificados y era esperable que cambiaran:**
    - `results/experiments_log.csv`: Aparece como `modified` porque cada script de entrenamiento abre el archivo en modo *append* (`mode="a"`) y escribe una nueva fila al final con la fecha y hora del momento de ejecución (`datetime.now()`).
-   - `data/data_log.json` (si registra timestamp de corrida): Sólo varía el campo de fecha si se regenera dinámicamente.
    - `models/*.pkl`: Los archivos binarios comprimidos con `joblib` pueden presentar leves variaciones en bytes de metadatos según el sistema operativo o entorno, aunque el modelo entrenado sea exactamente el mismo.
 
 2. **Archivos que confirman que el flujo se reproduce correctamente:**
