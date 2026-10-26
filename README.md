@@ -259,7 +259,7 @@ El modelo entrenado se encuentra en `models/model_mlp_ema.pkl`, las métricas en
 
 ---
 
-## Ejercicio 4 — Resolución de conflictos de Merge (NUEVO)
+## Ejercicio 4 — Resolución de conflictos de Merge 
 
 Al trabajar en ramas paralelas (`exp/algoritmo-gero`, `exp/knn`, `exp/hiperparametros-iara`, `exp/mlp-emasavat`) creadas a partir de `main`, cada integrante agregó la fila de su experimento al final de `results/experiments_log.csv` y una línea con sus métricas en la sección `## Resultados` de este `README.md`.
 
