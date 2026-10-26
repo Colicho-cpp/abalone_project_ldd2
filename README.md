@@ -167,20 +167,6 @@ varios minutos) y regenerar `results/optuna_trials_ema.csv`:
 
     python src/optuna_mlp_ema.py
 
-## Verificación de la reproducibilidad
-
-Después de recrear el entorno y ejecutar todos los scripts, correr `git status`:
-
-- **Esperable:** `results/experiments_log.csv` modificado (cada ejecución agrega filas nuevas con
-  la fecha y hora de la corrida), `results/mlp_ema.png` como archivo nuevo, y diferencias mínimas
-  en los últimos decimales de algún `metrics_*.json` (redondeo de punto flotante).
-- **Indicaría que algo no se reproduce:** cambios en `data/processed/abalone_clean.csv`, en algún
-  `models/*.pkl` o diferencias apreciables en las métricas.
-
-Para descartar los cambios esperables y dejar el repositorio como estaba:
-
-    git restore results/
-    git clean -n results/   # muestra los archivos nuevos; con -f se borran
 
 ## Resultados
 
