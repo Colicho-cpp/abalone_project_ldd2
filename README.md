@@ -9,14 +9,16 @@ y registro de datos, modelos y experimentos.
 
 ## Requisitos
 
-- **Python 3.13.7**
-- Git
+- **Python 3.13.7** (se recomienda usar la misma versión 3.13)
+- Git (o GitHub Desktop)
 
 ## Reproducir el entorno
 
+Clonar el repositorio (la carpeta que se crea se llama `abalone_project_ldd2`):
+
 ```bash
-git clone <URL-del-repositorio>
-cd abalone_project
+git clone https://github.com/Colicho-cpp/abalone_project_ldd2.git
+cd abalone_project_ldd2
 python -m venv .venv
 ```
 
@@ -31,6 +33,9 @@ Activar el entorno:
 source .venv/bin/activate
 ```
 
+> Si PowerShell bloquea `Activate.ps1` por la política de ejecución, usar la terminal CMD
+> (`.venv\Scripts\activate.bat`) o la terminal integrada de VS Code.
+
 Instalar las dependencias (versiones fijas):
 
 ```bash
@@ -43,18 +48,25 @@ Para usar el entorno en Jupyter / VS Code, seleccionar como kernel el intérpret
 ## Estructura del proyecto
 
 ```
-abalone_project/
+abalone_project_ldd2/
 ├── data/
-│   ├── raw/                  # datos originales (sin modificar)
-│   ├── processed/            # datos limpios o transformados
-│   └── data_log.json         # registro de transformaciones
+│   ├── raw/
+│   │   └── abalone_raw.csv          # datos originales (sin modificar)
+│   ├── processed/
+│   │   └── abalone_clean.csv        # datos limpios (generado por preprocess.py)
+│   └── data_log.json                # registro de transformaciones
 ├── src/
-│   ├── preprocess.py         # transformaciones y limpieza
-│   └── train_model.py        # entrenamiento y evaluación
+│   ├── preprocess.py                # limpieza y transformaciones
+│   ├── train_model.py               # experimento v2: SVR
+│   ├── train_knn.py                 # experimento v3: KNN
+│   ├── train_model_gradb.py         # experimento v4: Gradient Boosting
+│   ├── train_mlp_ema.py             # experimento MLP (MLPRegressor)
+│   └── optuna_mlp_ema.py            # búsqueda de hiperparámetros del MLP (opcional)
 ├── results/
-│   ├── metrics_v1.json       # métricas, hiperparámetros y semilla
-│   └── experiments_log.csv   # registro de experimentos
-├── models/                   # modelos serializados (.pkl)
+│   ├── metrics_v1.json ... metrics_v4.json, metrics_mlp_ema.json
+│   ├── optuna_trials_ema.csv        # historial de la búsqueda con Optuna
+│   └── experiments_log.csv          # registro de todos los experimentos
+├── models/                          # modelos serializados: model_v1..v4.pkl, model_mlp_ema.pkl
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -62,11 +74,24 @@ abalone_project/
 
 > Los archivos `.gitkeep` sólo sirven para que Git versione las carpetas vacías.
 
+## Cómo ejecutar el proyecto
+
+**Todos los scripts se ejecutan desde la raíz del proyecto** (la carpeta `abalone_project_ldd2`),
+con el entorno activado, y en este orden:
+
+1. Preprocesamiento: `python src/preprocess.py`
+2. Entrenamientos (son independientes entre sí, en cualquier orden):
+   `python src/train_model.py`, `python src/train_knn.py`,
+   `python src/train_model_gradb.py`, `python src/train_mlp_ema.py`
+
+Todos los experimentos usan la misma división train/test (`test_size=0.2`, `random_state=42`)
+y excluyen `rings` de las variables de entrada para evitar *data leakage*.
+
 ## Preprocesamiento
 
 El script `src/preprocess.py` realiza las siguientes operaciones:
 
-1. Carga el dataset Abalone original.
+1. Carga el dataset Abalone original (`data/raw/abalone_raw.csv`).
 2. Crea la variable `age = rings + 1.5`.
 3. Codifica `sex` mediante One-Hot Encoding.
 4. Analiza valores atípicos mediante boxplots.
@@ -76,6 +101,9 @@ El script `src/preprocess.py` realiza las siguientes operaciones:
 Para ejecutarlo desde la raíz del proyecto:
 
     python src/preprocess.py
+
+> **Importante:** el script abre una ventana con los boxplots de outliers y **no continúa
+> hasta que se cierra esa ventana**. Al cerrarla, termina de generar el CSV procesado.
 
 Las transformaciones están documentadas en `data/data_log.json`.
 
@@ -96,21 +124,63 @@ Además, podríamos utilizar herramientas como DVC para gestionar las versiones 
 
 ## Entrenamiento y evaluación
 
-Para entrenar el modelo de regresión con el Pipeline (`StandardScaler` + `RandomForestRegressor`), evaluar su desempeño con los datos de test, generar el archivo serializado (`models/model_v1.pkl`) y guardar las métricas en formato JSON (`results/metrics_v1.json`), ejecutar:
+Cada script entrena un Pipeline (`StandardScaler` + modelo), lo evalúa sobre test, guarda el
+modelo comprimido en `models/`, sus métricas en `results/` y **agrega una fila** a
+`results/experiments_log.csv`.
 
-python src/train_model.py
+### Modelo v1 — Random Forest (Ejercicio 3)
+
+El modelo v1 (`StandardScaler` + `RandomForestRegressor`, `n_estimators=100`, `random_state=42`)
+se entrenó originalmente con `src/train_model.py`. Ese script fue reutilizado luego para el
+experimento v2, por lo que **el código actual ya no regenera** `models/model_v1.pkl` ni
+`results/metrics_v1.json`; se conservan en el repositorio como resultado histórico.
+
+### Experimento v2 — SVR (rama `exp/algoritmo-gero`)
+
+Entrena un Pipeline (`StandardScaler` + `SVR` con `kernel='rbf'`, `C=10.0`, `epsilon=0.2`).
+Genera `models/model_v2.pkl` y `results/metrics_v2.json`:
+
+    python src/train_model.py
 
 ### Experimento v3 — KNN (rama `exp/knn`)
 
-Entrena un Pipeline (`StandardScaler` + `KNeighborsRegressor`). Los hiperparámetros (`n_neighbors`, `weights`, `p`) se eligen con `GridSearchCV` (KFold de 5 folds, `random_state=42`) usando sólo los datos de entrenamiento, y luego se evalúa sobre test. Genera `models/model_v3.pkl`, `results/metrics_v3.json` y agrega una fila a `results/experiments_log.csv`:
+Entrena un Pipeline (`StandardScaler` + `KNeighborsRegressor`). Los hiperparámetros (`n_neighbors`, `weights`, `p`) se eligen con `GridSearchCV` (KFold de 5 folds, `random_state=42`) usando sólo los datos de entrenamiento, y luego se evalúa sobre test. Genera `models/model_v3.pkl` y `results/metrics_v3.json`:
 
     python src/train_knn.py
 
 ### Experimento v4 — Gradient Boosting (rama `exp/hiperparametros-iara`)
 
-Entrena un Pipeline (`StandardScaler` + `GradientBoostingRegressor` con `n_estimators=100`, `learning_rate=0.1`, `random_state=42`) sobre la misma división train/test (`random_state=42`). Genera `models/model_v4.pkl`, `results/metrics_v4.json` y agrega una fila a `results/experiments_log.csv`:
+Entrena un Pipeline (`StandardScaler` + `GradientBoostingRegressor` con `n_estimators=100`, `learning_rate=0.1`, `random_state=42`). Genera `models/model_v4.pkl` y `results/metrics_v4.json`:
 
     python src/train_model_gradb.py
+
+### Experimento MLP — MLPRegressor (rama `exp/mlp-emasavat`)
+
+Entrena un Pipeline (`StandardScaler` + `MLPRegressor`) con los hiperparámetros encontrados por
+Optuna (ya fijados en el script). Genera `models/model_mlp_ema.pkl`,
+`results/metrics_mlp_ema.json` y el gráfico `results/mlp_ema.png`:
+
+    python src/train_mlp_ema.py
+
+**Opcional:** para repetir la búsqueda de hiperparámetros con Optuna (80 trials, puede tardar
+varios minutos) y regenerar `results/optuna_trials_ema.csv`:
+
+    python src/optuna_mlp_ema.py
+
+## Verificación de la reproducibilidad
+
+Después de recrear el entorno y ejecutar todos los scripts, correr `git status`:
+
+- **Esperable:** `results/experiments_log.csv` modificado (cada ejecución agrega filas nuevas con
+  la fecha y hora de la corrida), `results/mlp_ema.png` como archivo nuevo, y diferencias mínimas
+  en los últimos decimales de algún `metrics_*.json` (redondeo de punto flotante).
+- **Indicaría que algo no se reproduce:** cambios en `data/processed/abalone_clean.csv`, en algún
+  `models/*.pkl` o diferencias apreciables en las métricas.
+
+Para descartar los cambios esperables y dejar el repositorio como estaba:
+
+    git restore results/
+    git clean -n results/   # muestra los archivos nuevos; con -f se borran
 
 ## Resultados
 
